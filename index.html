@@ -1,198 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SmartMarmita</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body{font-family:Arial;background:#fff;color:#0f172a}
+.btn{padding:14px 22px;border-radius:10px;font-weight:700}
+.btn-primary{background:#16a34a;color:#fff}
+</style>
+</head>
+
+<body>
+
+<section style="max-width:900px;margin:auto;padding:40px">
+
+<h1 style="font-size:32px;font-weight:800;margin-bottom:10px">
+SmartMarmita
+</h1>
+
+<p style="margin-bottom:30px">
+Baixe gratuitamente o mini ebook.
+</p>
+
+<form id="leadForm" style="display:grid;gap:14px">
+
+<input name="name" placeholder="Seu nome" required style="padding:12px;border:1px solid #ddd;border-radius:8px">
+
+<input name="email" type="email" placeholder="Seu email" required style="padding:12px;border:1px solid #ddd;border-radius:8px">
+
+<input name="whatsapp" placeholder="WhatsApp" style="padding:12px;border:1px solid #ddd;border-radius:8px">
+
+<label style="font-size:14px">
+<input type="checkbox" name="consent" required>
+ Concordo em receber comunicações
+</label>
+
+<button id="submitBtn" class="btn btn-primary">
+Baixar Ebook
+</button>
+
+</form>
+
+<p id="status"></p>
+
+</section>
+
 <script>
-/* ================= CONFIG ================= */
 
 const WEBHOOK_URL  = "https://script.google.com/macros/s/AKfycbxBMhehIEOXZhE02SR7lwx1pYhDEuvqwF5e0eK7JL1ppAKlkdgnW-BdAI9DhRqzNsmAMQ/exec";
+
 const DOWNLOAD_URL = "https://drive.google.com/uc?export=download&id=1PXjjtpXMKfF4VT458npiSpulp8KTGYVX";
-const CHECKOUT_URL = "https://pay.kiwify.com.br/lftUD8U";
 
-/* ================= HELPERS ================= */
-
-const toastEl = () => document.getElementById('toast');
-
-function showToast(msg, ok = true) {
-  const el = toastEl();
-  if (!el) return;
-
-  el.textContent = msg;
-
-  el.className =
-    "fixed inset-x-0 top-4 z-50 mx-auto w-[92%] max-w-md rounded-xl px-4 py-3 text-center text-sm font-semibold " +
-    (ok ? "bg-emerald-500 text-white" : "bg-red-500 text-white");
-
-  el.classList.remove("hidden");
-
-  setTimeout(() => {
-    el.classList.add("hidden");
-  }, 3500);
-}
-
-const isEmail = (v) =>
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || "").trim());
-
-const getUTMs = () => {
-  const p = new URLSearchParams(location.search);
-  return {
-    utm_source: p.get("utm_source") || "",
-    utm_medium: p.get("utm_medium") || "",
-    utm_campaign: p.get("utm_campaign") || "",
-    utm_content: p.get("utm_content") || "",
-    utm_term: p.get("utm_term") || ""
-  };
-};
-
-/* ================= PAGE LOAD ================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  document.getElementById("year").textContent =
-    new Date().getFullYear();
+const form = document.getElementById("leadForm");
+const btn  = document.getElementById("submitBtn");
 
-  /* ===== MENU MOBILE ===== */
+form.addEventListener("submit", function(e){
 
-  const btn = document.getElementById("hamburger");
-  const menu = document.getElementById("mobileMenu");
-  const iconOpen = document.getElementById("iconOpen");
-  const iconClose = document.getElementById("iconClose");
+e.preventDefault();
 
-  if (btn) {
-    btn.addEventListener("click", () => {
-      menu.classList.toggle("hidden");
-      iconOpen.classList.toggle("hidden");
-      iconClose.classList.toggle("hidden");
-    });
-  }
+const data = new FormData(form);
 
-  /* ===== CHECKOUT LINK ===== */
+const name  = data.get("name");
+const email = data.get("email");
 
-  const buy = document.getElementById("buyNow");
-  if (buy) buy.href = CHECKOUT_URL;
+if(!name || name.length < 2){
+alert("Digite seu nome");
+return;
+}
 
-  /* ================= TIMER ================= */
+if(!email.includes("@")){
+alert("Digite um email válido");
+return;
+}
 
-  function endOfDay() {
-    const d = new Date();
-    return new Date(
-      d.getFullYear(),
-      d.getMonth(),
-      d.getDate(),
-      23,
-      59,
-      59
-    ).getTime();
-  }
+btn.disabled = true;
+btn.innerText = "Enviando...";
 
-  function formatHMS(ms) {
-    if (ms <= 0) return "00:00:00";
+/* envio para planilha */
 
-    const s = Math.floor(ms / 1000);
-    const h = Math.floor(s / 3600);
-    const m = Math.floor((s % 3600) / 60);
-    const sec = s % 60;
-
-    const pad = (n) => String(n).padStart(2, "0");
-
-    return `${pad(h)}:${pad(m)}:${pad(sec)}`;
-  }
-
-  const tEl = document.getElementById("timer");
-
-  function tick() {
-    const diff = endOfDay() - Date.now();
-    if (tEl) tEl.textContent = formatHMS(diff);
-  }
-
-  tick();
-  setInterval(tick, 1000);
-
-  /* ================= FORM ================= */
-
-  const form = document.getElementById("leadForm");
-  const btnSubmit = document.getElementById("submitBtn");
-
-  if (!form) return;
-
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const data = Object.fromEntries(new FormData(form).entries());
-
-    /* ===== ANTISPAM ===== */
-
-    if ((data.website || "").trim()) {
-      return;
-    }
-
-    /* ===== VALIDAÇÃO ===== */
-
-    if (!data.name || data.name.length < 2) {
-      showToast("Digite seu nome.", false);
-      return;
-    }
-
-    if (!isEmail(data.email)) {
-      showToast("Digite um e-mail válido.", false);
-      return;
-    }
-
-    if (!data.consent) {
-      showToast("Você precisa aceitar os termos.", false);
-      return;
-    }
-
-    /* ===== PAYLOAD ===== */
-
-    const payload = {
-      name: data.name,
-      email: data.email,
-      whatsapp: data.whatsapp || "",
-      consent: true,
-      page: location.href,
-      ts: new Date().toISOString(),
-      ...getUTMs()
-    };
-
-    /* ================= ENVIO ================= */
-
-    try {
-
-      btnSubmit.disabled = true;
-      btnSubmit.textContent = "Enviando...";
-
-      await fetch(WEBHOOK_URL, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
-
-      showToast("Liberando download...", true);
-
-      /* ===== DOWNLOAD ===== */
-
-      setTimeout(() => {
-        window.open(DOWNLOAD_URL, "_blank");
-      }, 800);
-
-      form.reset();
-
-    } catch (err) {
-
-      console.error(err);
-
-      showToast("Erro ao enviar. Baixando direto...", false);
-
-      /* fallback download */
-
-      window.open(DOWNLOAD_URL, "_blank");
-
-    } finally {
-
-      btnSubmit.disabled = false;
-      btnSubmit.textContent = "Quero baixar grátis";
-
-    }
-  });
+fetch(WEBHOOK_URL, {
+method:"POST",
+mode:"no-cors",
+body:data
 });
+
+/* download garantido */
+
+setTimeout(()=>{
+
+const link = document.createElement("a");
+link.href = DOWNLOAD_URL;
+link.target = "_blank";
+document.body.appendChild(link);
+link.click();
+link.remove();
+
+},800);
+
+btn.disabled = false;
+btn.innerText = "Baixar Ebook";
+
+form.reset();
+
+});
+
+});
+
 </script>
+
+</body>
+</html>
