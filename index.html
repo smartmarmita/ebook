@@ -85,8 +85,7 @@ btn.innerText = "Enviando...";
 
 /* envio para planilha */
 
-const data = new FormData(form);
-data.append("page", window.location.href);
+
 
 fetch(WEBHOOK_URL,{
 method:"POST",
