@@ -1,405 +1,198 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>SmartMarmita — Marmitas fitness econômicas</title>
-  <meta name="description" content="SmartMarmita: mini e-book gratuito + versão completa para organizar 5 dias de marmitas saudáveis gastando menos." />
-  <link rel="icon" type="image/png" href="favicon.png" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    :root{
-      --ink:#0F172A;        /* texto principal */
-      --muted:#475569;      /* texto secundário */
-      --bg:#FFFFFF;         /* fundo */
-      --panel:#F8FAFC;      /* blocos suaves */
-      --stroke:#E2E8F0;     /* bordas suaves */
-      --brand:#16A34A;      /* verde */
-      --brand-2:#0EA5E9;    /* azul leve p/ realce */
-      --alert:#EF4444;      /* avisos */
+<script>
+/* ================= CONFIG ================= */
+
+const WEBHOOK_URL  = "https://script.google.com/macros/s/AKfycbxBMhehIEOXZhE02SR7lwx1pYhDEuvqwF5e0eK7JL1ppAKlkdgnW-BdAI9DhRqzNsmAMQ/exec";
+const DOWNLOAD_URL = "https://drive.google.com/uc?export=download&id=1PXjjtpXMKfF4VT458npiSpulp8KTGYVX";
+const CHECKOUT_URL = "https://pay.kiwify.com.br/lftUD8U";
+
+/* ================= HELPERS ================= */
+
+const toastEl = () => document.getElementById('toast');
+
+function showToast(msg, ok = true) {
+  const el = toastEl();
+  if (!el) return;
+
+  el.textContent = msg;
+
+  el.className =
+    "fixed inset-x-0 top-4 z-50 mx-auto w-[92%] max-w-md rounded-xl px-4 py-3 text-center text-sm font-semibold " +
+    (ok ? "bg-emerald-500 text-white" : "bg-red-500 text-white");
+
+  el.classList.remove("hidden");
+
+  setTimeout(() => {
+    el.classList.add("hidden");
+  }, 3500);
+}
+
+const isEmail = (v) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v || "").trim());
+
+const getUTMs = () => {
+  const p = new URLSearchParams(location.search);
+  return {
+    utm_source: p.get("utm_source") || "",
+    utm_medium: p.get("utm_medium") || "",
+    utm_campaign: p.get("utm_campaign") || "",
+    utm_content: p.get("utm_content") || "",
+    utm_term: p.get("utm_term") || ""
+  };
+};
+
+/* ================= PAGE LOAD ================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  document.getElementById("year").textContent =
+    new Date().getFullYear();
+
+  /* ===== MENU MOBILE ===== */
+
+  const btn = document.getElementById("hamburger");
+  const menu = document.getElementById("mobileMenu");
+  const iconOpen = document.getElementById("iconOpen");
+  const iconClose = document.getElementById("iconClose");
+
+  if (btn) {
+    btn.addEventListener("click", () => {
+      menu.classList.toggle("hidden");
+      iconOpen.classList.toggle("hidden");
+      iconClose.classList.toggle("hidden");
+    });
+  }
+
+  /* ===== CHECKOUT LINK ===== */
+
+  const buy = document.getElementById("buyNow");
+  if (buy) buy.href = CHECKOUT_URL;
+
+  /* ================= TIMER ================= */
+
+  function endOfDay() {
+    const d = new Date();
+    return new Date(
+      d.getFullYear(),
+      d.getMonth(),
+      d.getDate(),
+      23,
+      59,
+      59
+    ).getTime();
+  }
+
+  function formatHMS(ms) {
+    if (ms <= 0) return "00:00:00";
+
+    const s = Math.floor(ms / 1000);
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+
+    const pad = (n) => String(n).padStart(2, "0");
+
+    return `${pad(h)}:${pad(m)}:${pad(sec)}`;
+  }
+
+  const tEl = document.getElementById("timer");
+
+  function tick() {
+    const diff = endOfDay() - Date.now();
+    if (tEl) tEl.textContent = formatHMS(diff);
+  }
+
+  tick();
+  setInterval(tick, 1000);
+
+  /* ================= FORM ================= */
+
+  const form = document.getElementById("leadForm");
+  const btnSubmit = document.getElementById("submitBtn");
+
+  if (!form) return;
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const data = Object.fromEntries(new FormData(form).entries());
+
+    /* ===== ANTISPAM ===== */
+
+    if ((data.website || "").trim()) {
+      return;
     }
-    html{scroll-behavior:smooth}
-    body{background:var(--bg); color:var(--ink)}
-    .container-ct{max-width:1040px}
-    .card{background:#fff; border:1px solid var(--stroke)}
-    .panel{background:var(--panel); border-top:1px solid var(--stroke); border-bottom:1px solid var(--stroke)}
-    .btn{display:inline-flex;align-items:center;justify-content:center;padding:.875rem 1.1rem;border-radius:12px;font-weight:700}
-    .btn-primary{background:var(--brand);color:#fff}
-    .btn-primary:hover{filter:brightness(1.05)}
-    .btn-ghost{border:1px solid var(--stroke);background:#fff;color:var(--ink)}
-    .btn-ghost:hover{background:#F1F5F9}
-    .badge{display:inline-flex;align-items:center;gap:.5rem;padding:.35rem .65rem;border-radius:999px;border:1px solid var(--stroke);color:var(--muted);background:#fff}
-    .input{border:1px solid var(--stroke);background:#fff;color:var(--ink)}
-    .input::placeholder{color:#94A3B8}
-    .input:focus{outline:0;box-shadow:0 0 0 3px rgba(22,163,74,.15);border-color:#86efac}
-    .price-cut{text-decoration:line-through;opacity:.7}
-    .section-gap{padding-top:3.5rem;padding-bottom:3.5rem}
-    .hr{height:1px;background:linear-gradient(90deg,transparent,rgba(15,23,42,.08),transparent)}
-    .mono{font-variant-numeric: tabular-nums}
-  </style>
-</head>
-<body id="top" class="antialiased">
 
-  <!-- HEADER -->
-  <header class="sticky top-0 z-40 border-b border-[var(--stroke)] bg-white/90 backdrop-blur">
-    <div class="mx-auto container-ct px-5 py-3">
-      <div class="flex items-center justify-between">
-        <a href="#top" class="text-lg md:text-xl font-extrabold tracking-tight">SMARTMARMITA</a>
-        <nav class="hidden md:flex items-center gap-7 text-sm">
-          <a href="#beneficios" class="text-[var(--muted)] hover:text-[var(--ink)]">Benefícios</a>
-          <a href="#como" class="text-[var(--muted)] hover:text-[var(--ink)]">Como funciona</a>
-          <a href="#form" class="text-[var(--muted)] hover:text-[var(--ink)]">Baixar grátis</a>
-          <a href="#oferta" class="text-[var(--muted)] hover:text-[var(--ink)]">Versão completa</a>
-        </nav>
-        <a href="#form" class="hidden md:inline-flex btn btn-primary">Quero meu e-book</a>
-        <button id="hamburger" class="md:hidden h-10 w-10 grid place-items-center rounded-lg border border-[var(--stroke)]" aria-label="Abrir menu">
-          <svg id="iconOpen" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7h16M4 12h16M4 17h16"/></svg>
-          <svg id="iconClose" class="hidden h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-      </div>
-    </div>
-    <nav id="mobileMenu" class="md:hidden hidden border-t border-[var(--stroke)] bg-white">
-      <div class="mx-auto container-ct px-5 py-3 grid gap-1 text-sm">
-        <a href="#beneficios" class="rounded-lg px-3 py-2 text-[var(--muted)] hover:bg-[#F8FAFC]">Benefícios</a>
-        <a href="#como" class="rounded-lg px-3 py-2 text-[var(--muted)] hover:bg-[#F8FAFC]">Como funciona</a>
-        <a href="#form" class="rounded-lg px-3 py-2 text-[var(--muted)] hover:bg-[#F8FAFC]">Baixar grátis</a>
-        <a href="#oferta" class="rounded-lg px-3 py-2 text-[var(--muted)] hover:bg-[#F8FAFC]">Versão completa</a>
-        <a href="#form" class="mt-1 btn btn-primary">Quero meu e-book</a>
-      </div>
-    </nav>
-  </header>
+    /* ===== VALIDAÇÃO ===== */
 
-  <!-- TOAST -->
-  <div id="toast" class="fixed inset-x-0 top-4 z-50 mx-auto hidden w-[92%] max-w-md rounded-xl px-4 py-3 text-center text-sm font-semibold"></div>
-
-  <!-- HERO -->
-  <section class="section-gap">
-    <div class="mx-auto container-ct px-5 grid gap-10 md:grid-cols-[1.1fr_.9fr] items-center">
-      <div>
-        <div class="badge">🥗 Organização • ⏱️ Praticidade • 💸 Economia</div>
-        <h1 class="mt-4 text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
-          Marmitas fitness para a semana inteira — <span class="text-[var(--brand)]">sem complicação</span>.
-        </h1>
-        <p class="mt-4 text-lg text-[var(--muted)] max-w-xl">
-          Baixe o mini e-book gratuito do <strong>SmartMarmita</strong> e aprenda a cozinhar por blocos, porcionar e armazenar com facilidade.
-        </p>
-        <div class="mt-7 flex flex-wrap items-center gap-3">
-          <a href="#form" class="btn btn-primary">Baixar mini e-book grátis</a>
-          <a href="#oferta" class="btn btn-ghost">Ver versão completa</a>
-        </div>
-        <div class="mt-6 flex flex-wrap items-center gap-6 text-sm text-[var(--muted)]">
-          <span>⭐️⭐️⭐️⭐️⭐️ 4,9/5</span>
-          <span>+5.000 downloads</span>
-          <span>Economia média R$ 300/mês</span>
-        </div>
-      </div>
-
-      <div class="card rounded-2xl p-6 md:p-8">
-        <div class="text-sm text-[var(--muted)]">Mini e-book gratuito</div>
-        <h3 class="mt-2 text-2xl font-bold">5 receitas • checklist • cardápio semanal</h3>
-        <p class="mt-2 text-[var(--muted)]">Receba no e-mail e comece hoje.</p>
-        <a href="#form" class="mt-6 btn btn-primary w-full">Quero receber</a>
-        <div class="mt-4 text-xs text-[var(--muted)]">Sem spam. Você pode sair quando quiser.</div>
-      </div>
-    </div>
-  </section>
-
-  <div class="hr mx-auto container-ct"></div>
-
-  <!-- BENEFÍCIOS -->
-  <section id="beneficios" class="section-gap">
-    <div class="mx-auto container-ct px-5">
-      <h2 class="text-2xl md:text-3xl font-extrabold">Por que o SmartMarmita funciona</h2>
-      <div class="mt-6 grid gap-4 md:grid-cols-3">
-        <div class="card rounded-xl p-5">
-          <h3 class="font-bold">💸 Economia real</h3>
-          <p class="mt-1 text-[var(--muted)]">Lista enxuta, aproveitamento total e zero desperdício.</p>
-        </div>
-        <div class="card rounded-xl p-5">
-          <h3 class="font-bold">⏱️ Tempo sob controle</h3>
-          <p class="mt-1 text-[var(--muted)]">Cozinhe por blocos e deixe 5 dias prontos em poucas horas.</p>
-        </div>
-        <div class="card rounded-xl p-5">
-          <h3 class="font-bold">🥗 Resultados visíveis</h3>
-          <p class="mt-1 text-[var(--muted)]">Macros equilibrados, porções certas e constância.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- COMO FUNCIONA -->
-  <section id="como" class="section-gap panel">
-    <div class="mx-auto container-ct px-5">
-      <h2 class="text-2xl md:text-3xl font-extrabold">Como funciona</h2>
-      <div class="mt-6 grid gap-4 md:grid-cols-3">
-        <div class="card rounded-xl p-5">
-          <div class="text-xs text-[var(--muted)]">Passo 1</div>
-          <h3 class="mt-1 font-bold">🛒 Compre certo</h3>
-          <p class="mt-1 text-[var(--muted)]">Lista objetiva para 5 dias. Nada de sobras caras.</p>
-        </div>
-        <div class="card rounded-xl p-5">
-          <div class="text-xs text-[var(--muted)]">Passo 2</div>
-          <h3 class="mt-1 font-bold">🍳 Cozinhe por blocos</h3>
-          <p class="mt-1 text-[var(--muted)]">Proteínas, carboidratos e legumes em paralelo.</p>
-        </div>
-        <div class="card rounded-xl p-5">
-          <div class="text-xs text-[var(--muted)]">Passo 3</div>
-          <h3 class="mt-1 font-bold">🥡 Porcione & armazene</h3>
-          <p class="mt-1 text-[var(--muted)]">Porções equilibradas e conservação correta.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- OFERTA PRO -->
-  <section id="oferta" class="section-gap">
-    <div class="mx-auto max-w-5xl px-5">
-      <div class="rounded-3xl border border-[var(--stroke)] bg-white">
-        <div class="grid gap-8 p-8 md:grid-cols-[1.2fr_.8fr] md:p-12">
-          <div>
-            <span class="inline-flex items-center gap-2 rounded-full border border-[var(--stroke)] bg-white px-3 py-1 text-sm text-[var(--muted)]">
-              🚀 Versão Completa • E-book + Recursos
-            </span>
-            <h2 class="mt-3 text-3xl font-extrabold leading-tight md:text-4xl">
-              Organize 5 dias de marmitas <span class="text-[var(--brand)]">gastando menos</span> — sem travar no planejamento
-            </h2>
-            <p class="mt-3 max-w-xl text-[var(--muted)]">
-              Receitas testadas, cardápios prontos, listas de compras e guia de armazenamento.
-            </p>
-
-            <ul class="mt-6 grid gap-3 sm:grid-cols-2">
-              <li class="flex items-start gap-3">✅ 30+ receitas econômicas e balanceadas</li>
-              <li class="flex items-start gap-3">✅ Cardápios semanais prontos</li>
-              <li class="flex items-start gap-3">✅ Listas de compras otimizadas</li>
-              <li class="flex items-start gap-3">✅ Guia de porcionamento & armazenamento</li>
-            </ul>
-
-            <div class="mt-6 rounded-2xl border border-[var(--stroke)] bg-[var(--panel)] p-4">
-              <div class="text-sm font-semibold text-[var(--brand-2)]">BÔNUS INCLUÍDOS</div>
-              <ul class="mt-2 grid gap-2 text-sm text-[var(--muted)] sm:grid-cols-2">
-                <li>• Tabela de substituições econômicas</li>
-                <li>• Template de lista de compras (editável)</li>
-                <li>• Checklist de pré-preparo (cozinhe em 2h)</li>
-                <li>• Guia rápido de temperos e combinações</li>
-              </ul>
-            </div>
-          </div>
-
-          <!-- Card de preço/ação -->
-          <div class="rounded-2xl border border-[var(--stroke)] bg-white p-6">
-            <div class="flex items-center justify-between">
-              <span class="text-sm text-[var(--muted)]">Preço promocional</span>
-              <span class="rounded-full bg-[#ECFDF5] px-3 py-1 text-xs font-semibold text-[var(--brand)]">Oferta limitada</span>
-            </div>
-
-            <div class="mt-2 flex items-end gap-3">
-              <span class="text-lg text-[var(--muted)] price-cut">R$ 67,90</span>
-              <span class="text-4xl font-extrabold text-[var(--brand)]">R$ 37,90</span>
-            </div>
-            <p class="mt-1 text-xs text-[var(--muted)]">ou 3x no cartão (via plataforma de pagamento)</p>
-
-            <a id="buyNow"
-               class="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--brand)] px-6 py-4 text-lg font-extrabold text-white transition hover:scale-[1.01] focus:outline-none focus:ring-4 focus:ring-emerald-200"
-               href="https://pay.kiwify.com.br/lftUD8U" aria-label="Comprar versão completa por 37,90">
-              Comprar agora por R$ 37,90 →
-            </a>
-            <p class="mt-2 text-center text-[13px] font-semibold text-[var(--alert)]">⚡ Termina em <span id="timer" class="mono">00:00:00</span></p>
-
-            <a href="#form" class="mt-3 inline-flex w-full items-center justify-center rounded-xl border border-[var(--stroke)] bg-white px-6 py-3 font-semibold hover:bg-[#F8FAFC]">
-              Prefiro testar grátis primeiro
-            </a>
-
-            <div class="mt-5 grid gap-3">
-              <div class="flex items-center justify-center gap-2 text-sm text-[var(--muted)]">
-                🔒 Checkout seguro • 🔁 Garantia de 7 dias
-              </div>
-              <div class="flex items-center justify-center gap-4 text-xs text-[var(--muted)]">
-                <span>Cartão • Pix • Boleto</span>
-                <span>Entrega imediata</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="grid gap-4 border-t border-[var(--stroke)] p-6 text-sm text-[var(--muted)] sm:grid-cols-3">
-          <div class="rounded-xl border border-[var(--stroke)] bg-white p-4 text-center">⭐️⭐️⭐️⭐️⭐️ Usuários satisfeitos</div>
-          <div class="rounded-xl border border-[var(--stroke)] bg-white p-4 text-center">🔒 Pagamento criptografado</div>
-          <div class="rounded-xl border border-[var(--stroke)] bg-white p-4 text-center">✉️ Suporte por e-mail</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section class="section-gap">
-    <div class="mx-auto container-ct px-5">
-      <h2 class="text-2xl md:text-3xl font-extrabold">Perguntas frequentes</h2>
-      <div class="mt-6 grid gap-4 md:grid-cols-2">
-        <details class="card rounded-xl p-5">
-          <summary class="font-semibold cursor-pointer">O mini e-book é realmente gratuito?</summary>
-          <p class="mt-2 text-[var(--muted)]">Sim. Basta preencher o formulário e você recebe o PDF no e-mail.</p>
-        </details>
-        <details class="card rounded-xl p-5">
-          <summary class="font-semibold cursor-pointer">A versão completa vale a pena?</summary>
-          <p class="mt-2 text-[var(--muted)]">Inclui 30+ receitas, cardápios e listas prontas para economizar mais.</p>
-        </details>
-        <details class="card rounded-xl p-5">
-          <summary class="font-semibold cursor-pointer">Funciona para iniciantes?</summary>
-          <p class="mt-2 text-[var(--muted)]">Sim. Método simples, passo a passo e ingredientes acessíveis.</p>
-        </details>
-        <details class="card rounded-xl p-5">
-          <summary class="font-semibold cursor-pointer">Posso cancelar os e-mails?</summary>
-          <p class="mt-2 text-[var(--muted)]">Claro. Você pode sair da lista quando quiser com 1 clique.</p>
-        </details>
-      </div>
-    </div>
-  </section>
-
-  <!-- FORM -->
-  <section id="form" class="section-gap panel">
-    <div class="mx-auto container-ct px-5">
-      <div class="card rounded-2xl p-6 md:p-8">
-        <h2 class="text-2xl md:text-3xl font-extrabold">Baixar mini e-book gratuito</h2>
-        <p class="mt-2 text-[var(--muted)]">Preencha e receba o PDF imediatamente.</p>
-
-        <form id="leadForm" class="mt-6 grid gap-4 md:grid-cols-2">
-          <div class="grid gap-2">
-            <label class="text-sm font-medium text-[var(--ink)]/90">Nome</label>
-            <input required name="name" type="text" autocomplete="name" class="input rounded-xl px-4 py-3" placeholder="Seu nome completo" />
-          </div>
-          <div class="grid gap-2">
-            <label class="text-sm font-medium text-[var(--ink)]/90">E-mail</label>
-            <input required name="email" type="email" autocomplete="email" class="input rounded-xl px-4 py-3" placeholder="voce@email.com" />
-          </div>
-          <div class="grid gap-2 md:col-span-2">
-            <label class="text-sm font-medium text-[var(--ink)]/90">WhatsApp (opcional)</label>
-            <input name="whatsapp" type="tel" autocomplete="tel" class="input rounded-xl px-4 py-3" placeholder="(11) 90000-0000" />
-          </div>
-          <label class="md:col-span-2 flex items-start gap-3 rounded-xl border border-[var(--stroke)] p-4">
-            <input required id="consent" name="consent" type="checkbox" class="mt-1 h-5 w-5 rounded border-[var(--stroke)] text-[var(--brand)] focus:ring-[var(--brand)]">
-            <span class="text-sm text-[var(--muted)]">Concordo em receber o mini e-book e comunicações relacionadas (LGPD). Posso sair quando quiser.</span>
-          </label>
-
-          <!-- honeypot -->
-          <div class="hidden"><input type="text" name="website" tabindex="-1" autocomplete="off" /></div>
-
-          <div class="md:col-span-2 grid gap-3">
-            <button id="submitBtn" type="submit" class="btn btn-primary w-full">Quero baixar grátis</button>
-            <p id="status" class="hidden text-center text-sm"></p>
-          </div>
-        </form>
-
-        <p class="mt-4 text-center text-xs text-[var(--muted)]">Ao enviar, você concorda com nossa política de privacidade.</p>
-      </div>
-    </div>
-  </section>
-
-  <footer class="border-t border-[var(--stroke)] py-6 text-center text-sm text-[var(--muted)]">
-    © <span id="year"></span> SmartMarmita. Todos os direitos reservados.
-  </footer>
-
-  <!-- SCRIPTS -->
-  <script>
-    // ======= CONFIG (troque para os seus endpoints) =======
-    const WEBHOOK_URL  = "https://script.google.com/macros/s/AKfycbxBMhehIEOXZhE02SR7lwx1pYhDEuvqwF5e0eK7JL1ppAKlkdgnW-BdAI9DhRqzNsmAMQ/exec"; // troque
-    const DOWNLOAD_URL = "https://drive.google.com/uc?export=download&id=1PXjjtpXMKfF4VT458npiSpulp8KTGYVX"; // troque
-    const CHECKOUT_URL = "https://pay.kiwify.com.br/lftUD8U"; // troque
-
-    // ===== Helper: Toast =====
-    const toastEl = () => document.getElementById('toast');
-    function showToast(msg, ok = true) {
-      const el = toastEl(); if (!el) return;
-      el.textContent = msg;
-      el.className = `fixed inset-x-0 top-4 z-50 mx-auto w-[92%] max-w-md rounded-xl px-4 py-3 text-center text-sm font-semibold ${ok ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'}`;
-      el.classList.remove('hidden');
-      clearTimeout(el._t); el._t = setTimeout(() => el.classList.add('hidden'), 3200);
+    if (!data.name || data.name.length < 2) {
+      showToast("Digite seu nome.", false);
+      return;
     }
-    const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(v||'').trim());
-    const getUTMs = () => {
-      const p = new URLSearchParams(location.search);
-      return {utm_source:p.get('utm_source')||'',utm_medium:p.get('utm_medium')||'',utm_campaign:p.get('utm_campaign')||'',utm_content:p.get('utm_content')||'',utm_term:p.get('utm_term')||''};
+
+    if (!isEmail(data.email)) {
+      showToast("Digite um e-mail válido.", false);
+      return;
+    }
+
+    if (!data.consent) {
+      showToast("Você precisa aceitar os termos.", false);
+      return;
+    }
+
+    /* ===== PAYLOAD ===== */
+
+    const payload = {
+      name: data.name,
+      email: data.email,
+      whatsapp: data.whatsapp || "",
+      consent: true,
+      page: location.href,
+      ts: new Date().toISOString(),
+      ...getUTMs()
     };
 
-    // ===== Header: mobile e âncoras =====
-    const headerOffset = () => { const h=document.querySelector('header'); return h? h.getBoundingClientRect().height:0; };
-    const smoothScroll = (hash) => { const t=document.querySelector(hash); if(!t) return; const top=t.getBoundingClientRect().top+pageYOffset-(headerOffset()+8); scrollTo({top,behavior:'smooth'}); };
+    /* ================= ENVIO ================= */
 
-    document.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('year').textContent = new Date().getFullYear();
+    try {
 
-      // mobile menu
-      const btn = document.getElementById('hamburger');
-      const menu = document.getElementById('mobileMenu');
-      const iconOpen = document.getElementById('iconOpen');
-      const iconClose = document.getElementById('iconClose');
-      const toggleMenu = () => { menu.classList.toggle('hidden'); iconOpen.classList.toggle('hidden'); iconClose.classList.toggle('hidden'); };
-      if (btn && menu) btn.addEventListener('click', toggleMenu);
+      btnSubmit.disabled = true;
+      btnSubmit.textContent = "Enviando...";
 
-      // âncoras
-      document.querySelectorAll('a[href^="#"]').forEach(a => {
-        a.addEventListener('click', (e) => {
-          const hash = a.getAttribute('href'); if (!hash || hash === '#') return;
-          e.preventDefault(); if (menu && !menu.classList.contains('hidden')) toggleMenu(); smoothScroll(hash);
-        });
+      await fetch(WEBHOOK_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
       });
 
-      // aplica checkout
-      const buy = document.getElementById('buyNow');
-      if (buy) buy.href = CHECKOUT_URL;
+      showToast("Liberando download...", true);
 
-      // máscara WhatsApp
-      const wEl = document.querySelector('input[name="whatsapp"]');
-      if (wEl) wEl.addEventListener('input', () => {
-        let v = wEl.value.replace(/\D/g,'').slice(0,11);
-        if (v.length > 6) wEl.value = `(${v.slice(0,2)}) ${v.slice(2,7)}-${v.slice(7)}`;
-        else if (v.length > 2) wEl.value = `(${v.slice(0,2)}) ${v.slice(2)}`;
-        else wEl.value = v;
-      });
+      /* ===== DOWNLOAD ===== */
 
-      // ======= TIMER até 23:59:59 de hoje =======
-      function endOfDay(){ const d=new Date(); return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23,59,59).getTime(); }
-      function formatHMS(ms){ if(ms<=0) return "00:00:00"; const s=Math.floor(ms/1000); const h=Math.floor(s/3600); const m=Math.floor((s%3600)/60); const sec=s%60; const pad=n=>String(n).padStart(2,'0'); return `${pad(h)}:${pad(m)}:${pad(sec)}`; }
-      const tEl=document.getElementById('timer');
-      function tick(){ const diff=endOfDay()-Date.now(); const f=formatHMS(diff); if(tEl) tEl.textContent=f; }
-      tick(); setInterval(tick,1000);
+      setTimeout(() => {
+        window.open(DOWNLOAD_URL, "_blank");
+      }, 800);
 
-      // ======= FORM =======
-      const form=document.getElementById('leadForm');
-      const btnSubmit=document.getElementById('submitBtn');
-      const statusP=document.getElementById('status');
+      form.reset();
 
-      if (form){
-        form.setAttribute('novalidate','novalidate');
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          const data=Object.fromEntries(new FormData(form).entries());
-          if ((data.website||'').trim()){ showToast('Erro no envio. Tente novamente.', false); return; }
+    } catch (err) {
 
-          let invalid=false;
-          if (!data.name || String(data.name).trim().length<2) invalid=true;
-          if (!isEmail(data.email||'')) invalid=true;
-          if (!data.consent){ showToast('É necessário aceitar o consentimento (LGPD).', false); invalid=true; }
-          if (invalid){ if(statusP) statusP.classList.add('hidden'); return; }
+      console.error(err);
 
-          const payload = { name:data.name||'', email:data.email||'', whatsapp:data.whatsapp||'', consent:true, ...getUTMs(), page:location.href, ts:new Date().toISOString() };
+      showToast("Erro ao enviar. Baixando direto...", false);
 
-          try{
-            if(btnSubmit){ btnSubmit.disabled=true; btnSubmit.textContent='Enviando...'; }
-            if(statusP) statusP.classList.add('hidden');
-            const res=await fetch(WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-            const txt=await res.text();
-            if(!res.ok) throw new Error('Falha no envio: '+res.status+' - '+txt);
-            showToast('Prontinho! Enviamos o mini e-book para seu e-mail.', true);
-            if (DOWNLOAD_URL && DOWNLOAD_URL !== '#'){ setTimeout(()=>{ location.href=DOWNLOAD_URL; },600); }
-            form.reset();
-          }catch(err){
-            console.error(err); showToast('Ocorreu um erro ao enviar. Tente novamente em instantes.', false);
-          }finally{
-            if(btnSubmit){ btnSubmit.disabled=false; btnSubmit.textContent='Quero baixar grátis'; }
-          }
-        });
-      }
-    });
-  </script>
-</body>
-</html>
+      /* fallback download */
+
+      window.open(DOWNLOAD_URL, "_blank");
+
+    } finally {
+
+      btnSubmit.disabled = false;
+      btnSubmit.textContent = "Quero baixar grátis";
+
+    }
+  });
+});
+</script>
