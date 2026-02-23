@@ -51,7 +51,7 @@ Baixar Ebook
 
 <script>
 
-const WEBHOOK_URL  = "https://script.google.com/macros/s/AKfycbxBMhehIEOXZhE02SR7lwx1pYhDEuvqwF5e0eK7JL1ppAKlkdgnW-BdAI9DhRqzNsmAMQ/exec";
+const WEBHOOK_URL  = "https://script.google.com/macros/s/AKfycbw3DFLjVjm9f7j3Jw4ZKGXRPcgCdXNQSEBAEdCnxtbPNgVRreZ78lMEzewt6RbUwhHP/exec";
 
 const DOWNLOAD_URL = "https://drive.google.com/uc?export=download&id=1PXjjtpXMKfF4VT458npiSpulp8KTGYVX";
 
@@ -85,7 +85,10 @@ btn.innerText = "Enviando...";
 
 /* envio para planilha */
 
-fetch(WEBHOOK_URL, {
+const data = new FormData(form);
+data.append("page", window.location.href);
+
+fetch(WEBHOOK_URL,{
 method:"POST",
 mode:"no-cors",
 body:data
