@@ -282,6 +282,80 @@ form.reset();
 });
 
 </script>
+<div id="popup-social" class="popup-social">
+  <img src="https://i.pravatar.cc/40" />
+  <div>
+    <strong id="nomePessoa">Carlos</strong> de 
+    <span id="cidadePessoa">São Paulo</span><br>
+    acabou de baixar o eBook
+  </div>
+</div>
 
+<style>
+.popup-social{
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: white;
+  border-radius: 10px;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap:10px;
+  box-shadow:0 8px 25px rgba(0,0,0,0.15);
+  font-size:13px;
+  z-index:9999;
+  opacity:0;
+  transform:translateY(20px);
+  transition:0.4s;
+}
+
+.popup-social.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.popup-social img{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+}
+</style>
+
+<script>
+
+const nomes = [
+"Mariana","Carlos","Juliana","Pedro","Fernanda",
+"Ana","Lucas","Patricia","Rafael","Bruna"
+];
+
+const cidades = [
+"São Paulo","Rio de Janeiro","Belo Horizonte",
+"Curitiba","Porto Alegre","Salvador",
+"Campinas","Brasília","Recife"
+];
+
+function mostrarPopup(){
+
+  const popup = document.getElementById("popup-social");
+
+  document.getElementById("nomePessoa").innerText =
+    nomes[Math.floor(Math.random()*nomes.length)];
+
+  document.getElementById("cidadePessoa").innerText =
+    cidades[Math.floor(Math.random()*cidades.length)];
+
+  popup.classList.add("show");
+
+  setTimeout(()=>{
+    popup.classList.remove("show");
+  },4000);
+}
+
+setInterval(mostrarPopup,9000);
+
+setTimeout(mostrarPopup,4000);
+
+</script>
 </body>
 </html>
