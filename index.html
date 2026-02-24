@@ -1,38 +1,110 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>SmartMarmita</title>
+
+<title>SmartMarmita - Ebook Gratuito</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
-body{font-family:Arial;background:#fff;color:#0f172a}
-.btn{padding:14px 22px;border-radius:10px;font-weight:700}
-.btn-primary{background:#16a34a;color:#fff}
-</style>
-</head>
 
+body{
+font-family:Arial;
+background:#f8fafc;
+color:#0f172a;
+}
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:40px 20px;
+}
+
+.hero{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:40px;
+align-items:center;
+}
+
+.btn{
+padding:14px 24px;
+border-radius:10px;
+font-weight:700;
+cursor:pointer;
+}
+
+.btn-primary{
+background:#16a34a;
+color:#fff;
+}
+
+.card{
+background:#fff;
+padding:30px;
+border-radius:14px;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+}
+
+input{
+width:100%;
+padding:12px;
+border:1px solid #ddd;
+border-radius:8px;
+}
+
+@media(max-width:800px){
+.hero{
+grid-template-columns:1fr;
+}
+}
+
+</style>
+
+</head>
 <body>
 
-<section style="max-width:900px;margin:auto;padding:40px">
+<div class="container">
 
-<h1 style="font-size:32px;font-weight:800;margin-bottom:10px">
+<div class="hero">
+
+<div>
+
+<h1 style="font-size:42px;font-weight:800;margin-bottom:20px">
 SmartMarmita
 </h1>
 
-<p style="margin-bottom:30px">
-Baixe gratuitamente o mini ebook.
+<p style="font-size:20px;margin-bottom:20px">
+Aprenda a preparar marmitas saudáveis, baratas e práticas para a semana inteira.
+</p>
+
+<ul style="margin-bottom:25px;line-height:1.8">
+<li>✔ Economize dinheiro</li>
+<li>✔ Coma melhor</li>
+<li>✔ Organize sua rotina</li>
+</ul>
+
+</div>
+
+<div class="card">
+
+<h2 style="font-size:26px;font-weight:700;margin-bottom:10px">
+Baixar Ebook Gratuito
+</h2>
+
+<p style="margin-bottom:20px">
+Preencha abaixo para receber agora.
 </p>
 
 <form id="leadForm" style="display:grid;gap:14px">
 
-<input name="name" placeholder="Seu nome" required style="padding:12px;border:1px solid #ddd;border-radius:8px">
+<input name="name" placeholder="Seu nome" required>
 
-<input name="email" type="email" placeholder="Seu email" required style="padding:12px;border:1px solid #ddd;border-radius:8px">
+<input name="email" type="email" placeholder="Seu email" required>
 
-<input name="whatsapp" placeholder="WhatsApp" style="padding:12px;border:1px solid #ddd;border-radius:8px">
+<input name="whatsapp" placeholder="WhatsApp">
 
 <label style="font-size:14px">
 <input type="checkbox" name="consent" required>
@@ -47,14 +119,17 @@ Baixar Ebook
 
 <p id="status"></p>
 
-</section>
+</div>
+
+</div>
+
+</div>
 
 <script>
 
 const WEBHOOK_URL  = "https://script.google.com/macros/s/AKfycbw3DFLjVjm9f7j3Jw4ZKGXRPcgCdXNQSEBAEdCnxtbPNgVRreZ78lMEzewt6RbUwhHP/exec";
 
 const DOWNLOAD_URL = "https://drive.google.com/uc?export=download&id=1PXjjtpXMKfF4VT458npiSpulp8KTGYVX";
-
 
 document.addEventListener("DOMContentLoaded", () => {
 
@@ -66,6 +141,7 @@ form.addEventListener("submit", function(e){
 e.preventDefault();
 
 const data = new FormData(form);
+data.append("page", window.location.href);
 
 const name  = data.get("name");
 const email = data.get("email");
@@ -83,17 +159,11 @@ return;
 btn.disabled = true;
 btn.innerText = "Enviando...";
 
-/* envio para planilha */
-
-
-
 fetch(WEBHOOK_URL,{
 method:"POST",
 mode:"no-cors",
 body:data
 });
-
-/* download garantido */
 
 setTimeout(()=>{
 
