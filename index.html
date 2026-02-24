@@ -283,11 +283,10 @@ form.reset();
 
 </script>
 <div id="popup-social" class="popup-social">
-  <img src="https://i.pravatar.cc/40" />
   <div>
     <strong id="nomePessoa">Carlos</strong> de 
     <span id="cidadePessoa">São Paulo</span><br>
-    acabou de baixar o eBook
+    acabou de baixar o eBook!
   </div>
 </div>
 
@@ -325,14 +324,24 @@ form.reset();
 <script>
 
 const nomes = [
-"Mariana","Carlos","Juliana","Pedro","Fernanda",
-"Ana","Lucas","Patricia","Rafael","Bruna"
+"Maria", "José", "Ana", "João", "Antônio", "Francisco", 
+  "Carlos", "Paulo", "Pedro", "Lucas", "Luiz", "Marcos",
+  "Gabriel", "Rafael", "Daniel", "Bruno", "Eduardo", "Felipe", 
+  "Mateus", "Diego", "Fernando", "Rodrigo", "Gustavo", "Juliana", 
+  "Mariana", "Fernanda", "Patrícia", "Aline", "Camila", "Larissa",
+  "Amanda", "Beatriz", "Carolina", "Bianca", "Isabela", "Natália", 
+  "Vanessa", "Renata", "Tatiane", "Cristiane".
+
 ];
 
 const cidades = [
-"São Paulo","Rio de Janeiro","Belo Horizonte",
-"Curitiba","Porto Alegre","Salvador",
-"Campinas","Brasília","Recife"
+"Rio Branco", "Maceió", "Macapá", "Manaus", "Salvador",
+  "Fortaleza", "Brasília", "Vitória", "Goiânia", "São Luís", 
+  "Cuiabá", "Campo Grande", "Belo Horizonte", "Belém",
+  "João Pessoa", "Curitiba", "Recife", "Teresina", 
+  "Rio de Janeiro", "Natal", "Porto Alegre", "Porto Velho", 
+  "Boa Vista", "Florianópolis", "São Paulo", "Aracaju", "Palmas"
+
 ];
 
 function mostrarPopup(){
