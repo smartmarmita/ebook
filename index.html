@@ -1,101 +1,16 @@
 <script>
 
-// ======= CONFIG =======
 const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxBMhehIEOXZhE02SR7lwx1pYhDEuvqwF5e0eK7JL1ppAKlkdgnW-BdAI9DhRqzNsmAMQ/exec";
 const DOWNLOAD_URL = "https://drive.google.com/uc?export=download&id=1PXjjtpXMKfF4VT458npiSpulp8KTGYVX";
-const CHECKOUT_URL = "https://pay.kiwify.com.br/lftUD8U";
 
-
-// ===== Toast =====
-function showToast(msg, ok = true) {
-const el = document.getElementById('toast');
-if (!el) return;
-
-el.textContent = msg;
-
-el.className =
-"fixed inset-x-0 top-4 z-50 mx-auto w-[92%] max-w-md rounded-xl px-4 py-3 text-center text-sm font-semibold " +
-(ok ? "bg-emerald-500 text-white" : "bg-red-500 text-white");
-
-el.classList.remove("hidden");
-
-setTimeout(()=>{
-el.classList.add("hidden");
-},3000);
-}
-
-
-// ===== EMAIL VALIDATION =====
 function isEmail(email){
 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-
-// ===== UTM =====
-function getUTMs(){
-const p = new URLSearchParams(location.search);
-return {
-utm_source:p.get('utm_source')||'',
-utm_medium:p.get('utm_medium')||'',
-utm_campaign:p.get('utm_campaign')||'',
-utm_content:p.get('utm_content')||'',
-utm_term:p.get('utm_term')||''
-};
-}
-
-
-// ===== PAGE READY =====
 document.addEventListener("DOMContentLoaded", () => {
 
-document.getElementById("year").textContent = new Date().getFullYear();
-
-
-// MENU MOBILE
-const btn = document.getElementById("hamburger");
-const menu = document.getElementById("mobileMenu");
-
-if(btn){
-btn.addEventListener("click",()=>{
-menu.classList.toggle("hidden");
-});
-}
-
-
-// BOTÃO CHECKOUT
-const buy = document.getElementById("buyNow");
-if(buy) buy.href = CHECKOUT_URL;
-
-
-// TIMER
-function endOfDay(){
-const d=new Date();
-return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23,59,59).getTime();
-}
-
-function formatHMS(ms){
-if(ms<=0) return "00:00:00";
-const s=Math.floor(ms/1000);
-const h=Math.floor(s/3600);
-const m=Math.floor((s%3600)/60);
-const sec=s%60;
-const pad=n=>String(n).padStart(2,'0');
-return `${pad(h)}:${pad(m)}:${pad(sec)}`;
-}
-
-const tEl=document.getElementById("timer");
-
-function tick(){
-const diff=endOfDay()-Date.now();
-if(tEl) tEl.textContent=formatHMS(diff);
-}
-
-tick();
-setInterval(tick,1000);
-
-
-// ===== FORM =====
 const form = document.getElementById("leadForm");
-const btnSubmit = document.getElementById("submitBtn");
+const btn  = document.getElementById("submitBtn");
 
 if(!form) return;
 
@@ -104,41 +19,30 @@ form.addEventListener("submit", function(e){
 e.preventDefault();
 
 const data = new FormData(form);
+data.append("page", window.location.href);
 
 const name = data.get("name");
 const email = data.get("email");
 
 if(!name || name.length < 2){
-showToast("Digite seu nome", false);
+alert("Digite seu nome");
 return;
 }
 
 if(!isEmail(email)){
-showToast("Digite um email válido", false);
+alert("Digite um email válido");
 return;
 }
 
-btnSubmit.disabled = true;
-btnSubmit.innerText = "Enviando...";
+btn.disabled = true;
+btn.innerText = "Enviando...";
 
-data.append("page", window.location.href);
-
-const utm = getUTMs();
-
-for (const key in utm) {
-data.append(key, utm[key]);
-}
-
-
-// ENVIO PARA GOOGLE SHEETS
 fetch(WEBHOOK_URL,{
 method:"POST",
 mode:"no-cors",
 body:data
 });
 
-
-// DOWNLOAD AUTOMÁTICO
 setTimeout(()=>{
 
 const link = document.createElement("a");
@@ -151,12 +55,10 @@ link.remove();
 
 },800);
 
-showToast("Ebook enviado! Download iniciado.");
-
 form.reset();
 
-btnSubmit.disabled = false;
-btnSubmit.innerText = "Quero baixar grátis";
+btn.disabled = false;
+btn.innerText = "Baixar Ebook";
 
 });
 
