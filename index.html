@@ -4,20 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SmartMarmita</title>
+<title>SmartMarmita | 30 Receitas Fitness</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
 
-:root{
---verde:#16a34a;
---cinza:#64748b;
---bg:#f8fafc;
-}
-
 body{
-background:var(--bg);
+background:#f8fafc;
 color:#0f172a;
 }
 
@@ -28,29 +22,35 @@ padding:20px;
 }
 
 .btn{
-background:var(--verde);
+background:#22c55e;
 color:white;
-padding:14px 22px;
+padding:16px 26px;
 border-radius:10px;
-font-weight:bold;
+font-weight:700;
+transition:.2s;
 }
 
 .btn:hover{
-opacity:.9;
+transform:scale(1.05);
 }
 
 .card{
 background:white;
 border-radius:16px;
 padding:30px;
-box-shadow:0 10px 30px rgba(0,0,0,.05);
+box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
 
 input{
+width:100%;
 border:1px solid #e2e8f0;
 padding:12px;
-border-radius:10px;
-width:100%;
+border-radius:8px;
+}
+
+.hero{
+background:linear-gradient(135deg,#059669,#10b981);
+color:white;
 }
 
 </style>
@@ -60,67 +60,36 @@ width:100%;
 
 <!-- HERO -->
 
-<section class="container grid md:grid-cols-2 gap-10 items-center">
+<section class="hero">
+
+<div class="container grid md:grid-cols-2 gap-10 items-center py-16">
 
 <div>
 
-<h1 class="text-4xl font-bold leading-tight">
-Marmitas fitness para a semana inteira
+<h1 class="text-4xl md:text-5xl font-bold leading-tight">
+🍱 30 Receitas Fitness  
+para sua semana inteira
 </h1>
 
-<p class="mt-4 text-lg text-slate-600">
-Aprenda a montar marmitas saudáveis economizando tempo e dinheiro.
+<p class="mt-4 text-lg opacity-90">
+Aprenda a preparar marmitas saudáveis, rápidas e econômicas mesmo com rotina corrida.
 </p>
 
-<a href="#form" class="btn mt-6 inline-block">
-Baixar eBook gratuito
+<div class="mt-6">
+
+<a href="#form" class="btn">
+📥 Baixar eBook Grátis
 </a>
 
 </div>
 
-<div class="card">
+</div>
 
-<h3 class="text-2xl font-bold">
-Receba o mini eBook
-</h3>
+<div>
 
-<p class="text-slate-500 mt-2">
-Digite seus dados abaixo
-</p>
+<img src="capa ebook smartmarmita.png" alt="ebook" class="rounded-xl shadow-xl">
 
-<form id="leadForm" class="mt-6 space-y-4">
-
-<input
-name="name"
-placeholder="Seu nome"
-required
-/>
-
-<input
-name="email"
-placeholder="Seu melhor email"
-required
-type="email"
-/>
-
-<input
-name="whatsapp"
-placeholder="WhatsApp (opcional)"
-/>
-
-<button
-id="submitBtn"
-class="btn w-full"
-type="submit"
->
-
-Baixar agora
-
-</button>
-
-<p id="status" class="text-center text-sm hidden"></p>
-
-</form>
+</div>
 
 </div>
 
@@ -131,79 +100,119 @@ Baixar agora
 <section class="container mt-20">
 
 <h2 class="text-3xl font-bold text-center">
-Por que usar o SmartMarmita
+Por que baixar este eBook
 </h2>
 
-<div class="grid md:grid-cols-3 gap-6 mt-10">
+<div class="grid md:grid-cols-3 gap-8 mt-10">
 
 <div class="card">
-<h3 class="font-bold">Economia</h3>
-<p class="text-slate-500">Gaste menos no mercado.</p>
+<h3 class="text-xl font-bold">🥗 Alimentação saudável</h3>
+<p class="text-slate-600 mt-2">
+Receitas pensadas para manter dieta equilibrada.
+</p>
 </div>
 
 <div class="card">
-<h3 class="font-bold">Saúde</h3>
-<p class="text-slate-500">Alimentação equilibrada.</p>
+<h3 class="text-xl font-bold">⏱ Economize tempo</h3>
+<p class="text-slate-600 mt-2">
+Prepare todas as refeições da semana em poucas horas.
+</p>
 </div>
 
 <div class="card">
-<h3 class="font-bold">Praticidade</h3>
-<p class="text-slate-500">Prepare tudo em poucas horas.</p>
+<h3 class="text-xl font-bold">💰 Economize dinheiro</h3>
+<p class="text-slate-600 mt-2">
+Pare de gastar com delivery e restaurantes.
+</p>
 </div>
 
 </div>
 
 </section>
 
-<!-- FORM -->
+<!-- MOCKUP -->
 
-<section id="form" class="container mt-20">
+<section class="container mt-24 grid md:grid-cols-2 gap-12 items-center">
+
+<div>
+
+<img src="capa mobile e descktop.png" class="rounded-xl shadow-xl">
+
+</div>
+
+<div>
+
+<h2 class="text-3xl font-bold">
+O que você vai aprender
+</h2>
+
+<ul class="mt-6 space-y-3 text-lg">
+
+<li>✔ 30 receitas fitness práticas</li>
+<li>✔ Marmitas para a semana inteira</li>
+<li>✔ Combinações inteligentes</li>
+<li>✔ Organização alimentar</li>
+<li>✔ Planejamento de refeições</li>
+
+</ul>
+
+<a href="#form" class="btn mt-8 inline-block">
+Quero baixar agora
+</a>
+
+</div>
+
+</section>
+
+<!-- FORMULARIO -->
+
+<section id="form" class="container mt-24">
 
 <div class="card max-w-xl mx-auto">
 
 <h2 class="text-3xl font-bold text-center">
-Baixar eBook gratuito
+📥 Receba o eBook gratuito
 </h2>
 
 <p class="text-center text-slate-500 mt-2">
-Preencha e receba imediatamente
+Preencha seus dados abaixo
 </p>
 
-<form id="leadForm2" class="mt-8 space-y-4">
+<form id="leadForm" class="space-y-4 mt-6">
 
-<input
-name="name"
-placeholder="Seu nome"
-required
-/>
+<input name="name" placeholder="Seu nome" required>
 
-<input
-name="email"
-placeholder="Seu email"
-required
-type="email"
-/>
+<input name="email" type="email" placeholder="Seu melhor email" required>
 
-<input
-name="whatsapp"
-placeholder="WhatsApp"
-/>
+<input name="whatsapp" placeholder="WhatsApp (opcional)">
 
-<button
-class="btn w-full"
-type="submit"
-id="submitBtn2"
->
-
+<button id="submitBtn" class="btn w-full">
 Baixar eBook
-
 </button>
 
-<p id="status2" class="text-center text-sm hidden"></p>
+<p id="status" class="text-center text-sm hidden"></p>
 
 </form>
 
 </div>
+
+</section>
+
+<!-- CTA FINAL -->
+
+<section class="container mt-24 text-center">
+
+<h2 class="text-3xl font-bold">
+Comece hoje sua alimentação saudável
+</h2>
+
+<p class="text-slate-600 mt-3">
+Baixe gratuitamente agora.
+</p>
+
+<a href="#form" class="btn mt-6 inline-block">
+Quero meu eBook
+</a>
 
 </section>
 
@@ -213,18 +222,18 @@ Baixar eBook
 
 <script>
 
-const WEBHOOK_URL="COLE_AQUI_URL_GOOGLE_SCRIPT";
-const DOWNLOAD_URL="COLE_AQUI_LINK_DRIVE";
+const WEBHOOK_URL="COLE_AQUI_SEU_WEBHOOK";
+const DOWNLOAD_URL="COLE_AQUI_LINK_EBOOK";
 
 function emailValido(email){
 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function iniciarForm(formId,btnId,statusId){
+document.addEventListener("DOMContentLoaded",()=>{
 
-const form=document.getElementById(formId);
-const btn=document.getElementById(btnId);
-const status=document.getElementById(statusId);
+const form=document.getElementById("leadForm");
+const btn=document.getElementById("submitBtn");
+const status=document.getElementById("status");
 
 form.addEventListener("submit",function(e){
 
@@ -232,15 +241,7 @@ e.preventDefault();
 
 const data=new FormData(form);
 
-const nome=data.get("name");
-const email=data.get("email");
-
-if(!nome || nome.length<2){
-alert("Digite seu nome");
-return;
-}
-
-if(!emailValido(email)){
+if(!emailValido(data.get("email"))){
 alert("Digite um email válido");
 return;
 }
@@ -264,6 +265,7 @@ status.innerText="Download iniciado ✔";
 const link=document.createElement("a");
 link.href=DOWNLOAD_URL;
 link.target="_blank";
+
 document.body.appendChild(link);
 link.click();
 link.remove();
@@ -277,10 +279,7 @@ form.reset();
 
 });
 
-}
-
-iniciarForm("leadForm","submitBtn","status");
-iniciarForm("leadForm2","submitBtn2","status2");
+});
 
 </script>
 
