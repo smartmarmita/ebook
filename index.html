@@ -4,41 +4,111 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SmartMarmita | 30 Receitas Fitness</title>
+<title>SmartMarmita | 5 Receitas Gratuitas</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
 <style>
 
+:root{
+--primary:#158f77;
+--secondary:#f97316;
+--dark:#0f172a;
+--light:#f8fafc;
+}
+
 body{
-background:#f8fafc;
-color:#0f172a;
+background:var(--light);
+color:var(--dark);
+font-family: Arial, sans-serif;
+margin:0;
 }
 
 .container{
-max-width:1100px;
+max-width:1200px;
 margin:auto;
 padding:20px;
 }
 
-.btn{
-background:#22c55e;
+.hero{
+background:linear-gradient(135deg,#158f77,#0f766e);
 color:white;
-padding:16px 26px;
-border-radius:10px;
+padding:80px 20px;
+position:relative;
+overflow:hidden;
+}
+
+.hero h1{
+font-size:46px;
+font-weight:800;
+line-height:1.2;
+}
+
+.hero p{
+font-size:20px;
+margin-top:20px;
+opacity:.9;
+}
+
+.btn{
+background:var(--secondary);
+color:white;
+padding:16px 28px;
+border-radius:12px;
 font-weight:700;
-transition:.2s;
+display:inline-block;
+transition:.3s;
+box-shadow:0 10px 20px rgba(0,0,0,.15);
+text-decoration:none;
 }
 
 .btn:hover{
-transform:scale(1.05);
+transform:translateY(-4px);
+}
+
+.mockup img{
+width:100%;
+max-width:400px;
+display:block;
+margin:auto;
+filter: drop-shadow(0 25px 40px rgba(0,0,0,.25));
+}
+
+.section{
+padding:100px 20px;
+}
+
+.section-title{
+font-size:34px;
+font-weight:800;
+text-align:center;
+margin-bottom:50px;
 }
 
 .card{
 background:white;
-border-radius:16px;
+border-radius:20px;
 padding:30px;
-box-shadow:0 10px 30px rgba(0,0,0,.08);
+box-shadow:0 20px 40px rgba(0,0,0,.08);
+}
+
+.price-box{
+background:#ecfdf5;
+padding:30px;
+border-radius:16px;
+text-align:center;
+margin-top:20px;
+}
+
+.price-old{
+text-decoration:line-through;
+color:#64748b;
+}
+
+.price-new{
+font-size:32px;
+font-weight:800;
+color:var(--secondary);
 }
 
 input{
@@ -48,9 +118,22 @@ padding:12px;
 border-radius:8px;
 }
 
-.hero{
-background:linear-gradient(135deg,#059669,#10b981);
-color:white;
+footer{
+text-align:center;
+padding:40px;
+color:#64748b;
+}
+
+@media(max-width:768px){
+
+.hero h1{
+font-size:32px;
+}
+
+.section{
+padding:60px 20px;
+}
+
 }
 
 </style>
@@ -62,33 +145,28 @@ color:white;
 
 <section class="hero">
 
-<div class="container grid md:grid-cols-2 gap-10 items-center py-16">
+<div class="container grid md:grid-cols-2 gap-10 items-center">
 
 <div>
 
-<h1 class="text-4xl md:text-5xl font-bold leading-tight">
-🍱 30 Receitas Fitness  
-para sua semana inteira
+<h1>
+🍱 5 Receitas Fitness Gratuitas  
+Para Organizar Sua Semana
 </h1>
 
-<p class="mt-4 text-lg opacity-90">
-Aprenda a preparar marmitas saudáveis, rápidas e econômicas mesmo com rotina corrida.
+<p>
+Baixe gratuitamente parte do método SmartMarmita  
+e descubra como ter acesso às 30 receitas completas.
 </p>
 
-<div class="mt-6">
-
-<a href="#form" class="btn">
-📥 Baixar eBook Grátis
+<a href="#form" class="btn mt-6">
+Baixar Versão Gratuita
 </a>
 
 </div>
 
-</div>
-
-<div>
-
-<img src="capa ebook smartmarmita.png" alt="ebook" class="rounded-xl shadow-xl">
-
+<div class="mockup">
+<img src="CAPA SMARTMARMITA SOMENTE CELULAR.png" alt="Mockup Celular">
 </div>
 
 </div>
@@ -97,81 +175,86 @@ Aprenda a preparar marmitas saudáveis, rápidas e econômicas mesmo com rotina 
 
 <!-- BENEFICIOS -->
 
-<section class="container mt-20">
+<section class="section">
 
-<h2 class="text-3xl font-bold text-center">
-Por que baixar este eBook
+<div class="container">
+
+<h2 class="section-title">
+Por que começar hoje?
 </h2>
 
-<div class="grid md:grid-cols-3 gap-8 mt-10">
+<div class="grid md:grid-cols-3 gap-8">
 
 <div class="card">
-<h3 class="text-xl font-bold">🥗 Alimentação saudável</h3>
-<p class="text-slate-600 mt-2">
-Receitas pensadas para manter dieta equilibrada.
-</p>
+<h3 class="font-bold text-xl">🥗 Alimentação equilibrada</h3>
+<p class="mt-2 text-slate-600">Receitas pensadas para manter consistência alimentar.</p>
 </div>
 
 <div class="card">
-<h3 class="text-xl font-bold">⏱ Economize tempo</h3>
-<p class="text-slate-600 mt-2">
-Prepare todas as refeições da semana em poucas horas.
-</p>
+<h3 class="font-bold text-xl">⏱ Economia de tempo</h3>
+<p class="mt-2 text-slate-600">Prepare sua semana inteira em poucas horas.</p>
 </div>
 
 <div class="card">
-<h3 class="text-xl font-bold">💰 Economize dinheiro</h3>
-<p class="text-slate-600 mt-2">
-Pare de gastar com delivery e restaurantes.
-</p>
+<h3 class="font-bold text-xl">💰 Economia financeira</h3>
+<p class="mt-2 text-slate-600">Reduza gastos com delivery e improvisos.</p>
+</div>
+
 </div>
 
 </div>
 
 </section>
 
-<!-- MOCKUP -->
+<!-- VERSÃO COMPLETA -->
 
-<section class="container mt-24 grid md:grid-cols-2 gap-12 items-center">
+<section class="section" style="background:#ffffff;">
 
-<div>
+<div class="container grid md:grid-cols-2 gap-16 items-center">
 
-<img src="capa mobile e descktop.png" class="rounded-xl shadow-xl">
-
+<div class="mockup">
+<img src="CAPA SMARTMARMITA TABLET.png" alt="Mockup Tablet">
 </div>
 
 <div>
 
 <h2 class="text-3xl font-bold">
-O que você vai aprender
+Desbloqueie as 30 Receitas Completas
 </h2>
 
-<ul class="mt-6 space-y-3 text-lg">
+<p class="mt-6 text-lg text-slate-600">
+O SmartMarmita completo inclui planejamento semanal,
+lista de compras inteligente e guia de preparo em 2 horas.
+</p>
 
-<li>✔ 30 receitas fitness práticas</li>
-<li>✔ Marmitas para a semana inteira</li>
-<li>✔ Combinações inteligentes</li>
-<li>✔ Organização alimentar</li>
-<li>✔ Planejamento de refeições</li>
+<div class="price-box">
+<p class="price-old">De R$47,90</p>
+<p class="price-new">Por apenas R$47,90</p>
+<p class="mt-2 text-sm text-slate-500">
+Acesso imediato pela Kiwify
+</p>
+</div>
 
-</ul>
-
-<a href="#form" class="btn mt-8 inline-block">
-Quero baixar agora
+<a href="https://pay.kiwify.com.br/1neba3L" class="btn mt-6">
+Quero a Versão Completa
 </a>
+
+</div>
 
 </div>
 
 </section>
 
-<!-- FORMULARIO -->
+<!-- FORMULÁRIO -->
 
-<section id="form" class="container mt-24">
+<section id="form" class="section">
+
+<div class="container">
 
 <div class="card max-w-xl mx-auto">
 
 <h2 class="text-3xl font-bold text-center">
-📥 Receba o eBook gratuito
+📥 Receba as 5 Receitas Gratuitas
 </h2>
 
 <p class="text-center text-slate-500 mt-2">
@@ -181,13 +264,11 @@ Preencha seus dados abaixo
 <form id="leadForm" class="space-y-4 mt-6">
 
 <input name="name" placeholder="Seu nome" required>
-
 <input name="email" type="email" placeholder="Seu melhor email" required>
-
 <input name="whatsapp" placeholder="WhatsApp (opcional)">
 
 <button id="submitBtn" class="btn w-full">
-Baixar eBook
+Baixar Agora
 </button>
 
 <p id="status" class="text-center text-sm hidden"></p>
@@ -196,34 +277,18 @@ Baixar eBook
 
 </div>
 
-</section>
-
-<!-- CTA FINAL -->
-
-<section class="container mt-24 text-center">
-
-<h2 class="text-3xl font-bold">
-Comece hoje sua alimentação saudável
-</h2>
-
-<p class="text-slate-600 mt-3">
-Baixe gratuitamente agora.
-</p>
-
-<a href="#form" class="btn mt-6 inline-block">
-Quero meu eBook
-</a>
+</div>
 
 </section>
 
-<footer class="text-center text-sm text-slate-500 mt-20 pb-10">
+<footer>
 © 2026 SmartMarmita
 </footer>
 
 <script>
 
 const WEBHOOK_URL="https://script.google.com/macros/s/AKfycbw3DFLjVjm9f7j3Jw4ZKGXRPcgCdXNQSEBAEdCnxtbPNgVRreZ78lMEzewt6RbUwhHP/exec";
-const DOWNLOAD_URL="https://drive.google.com/file/d/1PXjjtpXMKfF4VT458npiSpulp8KTGYVX/view?usp=sharing";
+const DOWNLOAD_URL="https://docs.google.com/spreadsheets/d/1ML_rXjth4e1z5Xb_5BslrW3qevJbVBInWn8mARGR-bQ/edit?usp=sharing";
 
 function emailValido(email){
 return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -271,7 +336,7 @@ link.click();
 link.remove();
 
 btn.disabled=false;
-btn.innerText="Baixar eBook";
+btn.innerText="Baixar Agora";
 
 form.reset();
 
@@ -282,114 +347,6 @@ form.reset();
 });
 
 </script>
-  
-  <!-- POPUP -->
-  
-<div id="popup-social" class="popup-social">
-<span id="nomePessoa"></span> de 
-<span id="cidadePessoa"></span> acabou de baixar o eBook 📥
-</div>
 
-<style>
-
-.popup-social{
-position:fixed;
-bottom:20px;
-left:20px;
-background:#ffffff;
-padding:12px 16px;
-border-radius:10px;
-box-shadow:0 10px 30px rgba(0,0,0,0.15);
-font-size:14px;
-z-index:9999;
-opacity:0;
-transform:translateY(20px);
-transition:0.4s;
-}
-
-.popup-social.show{
-opacity:1;
-transform:translateY(0);
-}
-
-</style>
-
-<script>
-
-const nomes = [
-"Maria","José","Ana","João","Antônio","Francisco","Carlos","Paulo","Pedro","Lucas",
-"Luiz","Marcos","Gabriel","Rafael","Daniel","Bruno","Eduardo","Felipe","Mateus",
-"Diego","Fernando","Rodrigo","Gustavo","Juliana","Mariana","Fernanda","Patrícia",
-"Aline","Camila","Larissa","Amanda","Beatriz","Carolina","Bianca","Isabela",
-"Natália","Vanessa","Renata","Tatiane","Cristiane"
-];
-
-const cidades = [
-"Rio Branco","Maceió","Macapá","Manaus","Salvador","Fortaleza","Brasília","Vitória",
-"Goiânia","São Luís","Cuiabá","Campo Grande","Belo Horizonte","Belém","João Pessoa",
-"Curitiba","Recife","Teresina","Rio de Janeiro","Natal","Porto Alegre","Porto Velho",
-"Boa Vista","Florianópolis","São Paulo","Aracaju","Palmas"
-];
-
-function mostrarPopup(){
-
-const popup = document.getElementById("popup-social");
-
-const nome = nomes[Math.floor(Math.random()*nomes.length)];
-const cidade = cidades[Math.floor(Math.random()*cidades.length)];
-
-document.getElementById("nomePessoa").innerText = nome;
-document.getElementById("cidadePessoa").innerText = cidade;
-
-popup.classList.add("show");
-
-setTimeout(()=>{
-popup.classList.remove("show");
-},4200);
-
-}
-
-setInterval(mostrarPopup, 9000);
-
-setTimeout(mostrarPopup, 3500);
-
-</script>
-
-   <!-- CONTADOR DE DOWNLOADS -->
-  
-<div class="downloads">
-🔥 <strong><span id="downloadCount">3842</span></strong> pessoas já baixaram este eBook gratuito
-</div>
-
-<style>
-.downloads{
-margin-top:18px;
-font-size:15px;
-color:#374151;
-background:#f9fafb;
-padding:10px 14px;
-border-radius:8px;
-display:inline-block;
-}
-</style>
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function(){
-
-let count = 3842;
-const el = document.getElementById("downloadCount");
-
-function atualizar(){
-count += Math.floor(Math.random()*4)+1;
-el.textContent = count.toLocaleString("pt-BR");
-}
-
-setInterval(atualizar, 4000);
-
-});
-
-</script>
-  
 </body>
 </html>
